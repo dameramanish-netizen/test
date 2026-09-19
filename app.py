@@ -4,14 +4,15 @@ st.set_page_config(
     page_title="Infor LN Trace Debugger", page_icon="🔍", layout="wide"
 )
 
-# 1. Slider for Container Transparency inside the sidebar or appearance panel
-# Let's assume the user sets a value from 0 to 100 for container opacity
-container_opacity = st.slider("Container Opacity", 0, 100, 70) / 100.0
-dim_opacity = (
-    st.slider("Dim background", 0, 100, 45) / 100.0
-)  # Background overlay opacity
+# 1. Sidebar / Appearance Controls (Defined first so we can use their values in CSS)
+with st.sidebar:
+  st.subheader("Appearance Settings")
+  container_opacity = (
+      st.slider("Container Transparency", 0, 100, 70) / 100.0
+  )
+  dim_opacity = st.slider("Dim background", 0, 100, 45) / 100.0
 
-# 2. Inject CSS using the Python variables for opacity
+# 2. Inject CSS using the slider values
 st.markdown(
     f"""
     <style>
@@ -61,17 +62,67 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# 3. Main Header Section
 st.title("Infor LN Trace Debugger")
 st.caption("Search logs and inspect execution stacks")
 st.markdown("---")
 
+# 4. Strict Two-Column Layout matching your design
 left_col, right_col = st.columns([1, 2], gap="large")
 
 with left_col:
   st.subheader("Trace setup")
-  st.file_uploader("Upload trace file", type=["gz", "log", "txt"])
-  st.text_input("Add keyword", placeholder="dal.handle.field.error")
+  uploaded_file = st.file_uploader(
+      "Upload trace file", type=["gz", "log", "txt"]
+  )
+
+  st.markdown("### Keywords")
+  keyword = st.text_input("Add keyword", placeholder="dal.handle.field.error")
+
+  st.markdown("### Filters")
+  dal_filter = st.checkbox("DAL filter", value=True)
+  depth_filter = st.checkbox("Depth filter", value=True)
+  trim_timestamps = st.checkbox("Trim timestamps")
+
+  if st.button("🚀 Analyze trace", type="primary", use_container_width=True):
+    st.success("Analysis complete!")
+
+  st.markdown("---")
+  with st.expander("Session"):
+    if st.button("Clear session"):
+      st.info("Session cleared.")
 
 with right_col:
-  st.info("📁 **bshell.14724.gz**  |  128 matches  |  🟢 **Ready**")
-  st.write("The background mountain scene will now dynamically fade through!")
+  # Status Banner / File Info
+  st.info(
+      "📁 **bshell.14724.gz**  |  128 matches  |  🟢 **Ready**",
+      icon="ℹ️",
+  )
+
+  # Tabs for navigation
+  tab1, tab2 = st.tabs(["Search results", "Call stack"])
+
+  with tab2:
+    st.markdown("##### Selected call")
+    st.code(
+        "dal.handle.field.error    Process 00029    Depth 12",
+        language="text",
+    )
+
+    st.markdown("##### Call stack")
+
+    stack_code = """
+1 ---> (depth 6):  program.execute("tds350")
+2      (depth 7):  process.order(order_id=450123)
+3      (depth 8):  validate.order(order_id=450123)
+4      (depth 9):  check.fields(table="tdsls", order_id=450123)
+5      (depth 10): dal.field.get("tdsls.due_date")
+6      (depth 11): dal.field.validate(value="")
+7 ---> (depth 12): dal.handle.field.error(field="due_date", reason="mandatory", code="DAL-042")
+    """.strip()
+
+    st.code(stack_code, language="python")
+    st.caption("Showing the reconstructed path to the selected call.")
+
+  with tab1:
+    st.write("Search results will appear here...")
