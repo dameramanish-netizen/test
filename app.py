@@ -37,7 +37,7 @@ overlay_opacity = dim_slider / 110.0
 st.markdown(
     f"""
     <style>
-    /* Force the nature background image on the whole app */
+    /* Force the nature background image */
     .stApp {{
         background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb") !important;
         background-size: cover !important;
@@ -45,7 +45,7 @@ st.markdown(
         background-attachment: fixed !important;
     }}
 
-    /* Make Streamlit's internal main wrapper transparent so the image shows */
+    /* Make inner wrappers transparent */
     .main, .stMain, [data-testid="stAppViewContainer"] {{
         background: transparent !important;
     }}
@@ -63,18 +63,19 @@ st.markdown(
         pointer-events: none;
     }}
 
-    /* Frosted glass main container sitting above the overlay */
+    /* Make the main content boxes translucent (Glassmorphism effect) */
     .block-container {{
         position: relative;
         z-index: 1;
-        background: rgba(255, 255, 255, 0.9) !important;
+        background: rgba(255, 255, 255, 0.65) !important; /* Lower this number (e.g. 0.5) to make it more see-through */
         padding: 2.5rem;
         border-radius: 16px;
-        backdrop-filter: blur(12px);
+        backdrop-filter: blur(10px);
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }}
     
-    h1, h2, h3, p, label {{
+    /* Ensure text stays sharp and readable over the transparent background */
+    h1, h2, h3, p, label, span {{
         color: #1e293b !important;
     }}
     </style>
