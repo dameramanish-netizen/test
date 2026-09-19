@@ -37,12 +37,12 @@ overlay_opacity = dim_slider / 110.0
 st.markdown(
     f"""
     <style>
-    /* Set nature background image */
+    /* Force the nature background image to render */
     .stApp {{
-        background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
     }}
 
     /* Dynamic Dim Overlay layer */
@@ -69,7 +69,6 @@ st.markdown(
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }}
     
-    /* Text readability fix */
     h1, h2, h3, p, label {{
         color: #1e293b !important;
     }}
