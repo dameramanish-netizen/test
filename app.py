@@ -37,12 +37,17 @@ overlay_opacity = dim_slider / 110.0
 st.markdown(
     f"""
     <style>
-    /* Force the nature background image to render */
+    /* Force the nature background image on the whole app */
     .stApp {{
         background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb") !important;
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
+    }}
+
+    /* Make Streamlit's internal main wrapper transparent so the image shows */
+    .main, .stMain, [data-testid="stAppViewContainer"] {{
+        background: transparent !important;
     }}
 
     /* Dynamic Dim Overlay layer */
@@ -62,7 +67,7 @@ st.markdown(
     .block-container {{
         position: relative;
         z-index: 1;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.9) !important;
         padding: 2.5rem;
         border-radius: 16px;
         backdrop-filter: blur(12px);
@@ -76,7 +81,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 # 4. Main Content Header & Right Column
 with right_col:
   st.title("Infor LN Trace Debugger")
